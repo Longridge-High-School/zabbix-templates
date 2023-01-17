@@ -1,7 +1,7 @@
 {
     "zabbix_export": {
         "version": "6.2",
-        "date": "2023-01-16T14:34:48Z",
+        "date": "2023-01-17T15:50:12Z",
         "template_groups": [
             {
                 "uuid": "394c5e7371c2468cbaa0fd6d6af899bb",
@@ -19,6 +19,132 @@
                     }
                 ],
                 "items": [
+                    {
+                        "uuid": "6e93fdb86b854d6a99b741047a93d63d",
+                        "name": "ICMP Ping",
+                        "type": "SIMPLE",
+                        "key": "icmpping",
+                        "history": "1w",
+                        "valuemap": {
+                            "name": "Service State"
+                        },
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "a36fa34dfc1f482ebec1df672e731e17",
+                                "expression": "max(/Toshiba Printer/icmpping,#3)=0",
+                                "name": "Unavailable by ICMP ping",
+                                "priority": "HIGH",
+                                "tags": [
+                                    {
+                                        "tag": "scope",
+                                        "value": "availability"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3f2817490a694ebf980e5176b739b585",
+                        "name": "ICMP loss",
+                        "type": "SIMPLE",
+                        "key": "icmppingloss",
+                        "history": "1w",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "41c17c360a644a2baf6e06798620278e",
+                                "expression": "min(/Toshiba Printer/icmppingloss,5m)>{$ICMP.LOSS_WARN} and min(/Toshiba Printer/icmppingloss,5m)<100",
+                                "name": "High ICMP ping loss",
+                                "opdata": "Loss: {ITEM.LASTVALUE1}",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "Unavailable by ICMP ping",
+                                        "expression": "max(/Toshiba Printer/icmpping,#3)=0"
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "scope",
+                                        "value": "availability"
+                                    },
+                                    {
+                                        "tag": "scope",
+                                        "value": "performance"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6836770aec5843198e217a9f1f7739eb",
+                        "name": "ICMP response time",
+                        "type": "SIMPLE",
+                        "key": "icmppingsec",
+                        "history": "1w",
+                        "value_type": "FLOAT",
+                        "units": "s",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "7e1154589b9348168e224abb89ae267b",
+                                "expression": "avg(/Toshiba Printer/icmppingsec,5m)>{$ICMP.RESPONSE_TIME_WARN}",
+                                "name": "High ICMP ping response time",
+                                "opdata": "Value: {ITEM.LASTVALUE1}",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "High ICMP ping loss",
+                                        "expression": "min(/Toshiba Printer/icmppingloss,5m)>{$ICMP.LOSS_WARN} and min(/Toshiba Printer/icmppingloss,5m)<100"
+                                    },
+                                    {
+                                        "name": "Unavailable by ICMP ping",
+                                        "expression": "max(/Toshiba Printer/icmpping,#3)=0"
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "scope",
+                                        "value": "availability"
+                                    },
+                                    {
+                                        "tag": "scope",
+                                        "value": "performance"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "uuid": "24b778a891b540e98316529094c8b7f0",
                         "name": "Device Model",
@@ -43,6 +169,46 @@
                         "trends": "0",
                         "value_type": "TEXT",
                         "description": "The devices reported name"
+                    },
+                    {
+                        "uuid": "2668fc7664904977982c79b3ee4ac19b",
+                        "name": "SNMP agent availability",
+                        "type": "INTERNAL",
+                        "key": "zabbix[host,snmp,available]",
+                        "history": "7d",
+                        "valuemap": {
+                            "name": "Zabbix SNMP Monitor"
+                        },
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "6d3e565052814b4ab3a16cf9bbae7007",
+                                "expression": "max(/Toshiba Printer/zabbix[host,snmp,available],{$SNMP.TIMEOUT})=0",
+                                "name": "No SNMP data collection",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "Unavailable by ICMP ping",
+                                        "expression": "max(/Toshiba Printer/icmpping,#3)=0"
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "scope",
+                                        "value": "availability"
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ],
                 "discovery_rules": [
@@ -86,13 +252,35 @@
                                 ],
                                 "trigger_prototypes": [
                                     {
+                                        "uuid": "e8e0c2d78cc6415c9708f8c0f6402c80",
+                                        "expression": "last(/Toshiba Printer/toshiba.consumables.level[{#SNMPINDEX}])=0",
+                                        "name": "Consumable {#CONSUMABLENAME}: Empty",
+                                        "priority": "AVERAGE",
+                                        "tags": [
+                                            {
+                                                "tag": "component",
+                                                "value": "printer"
+                                            },
+                                            {
+                                                "tag": "consumable",
+                                                "value": "{#CONSUMABLENAME}"
+                                            }
+                                        ]
+                                    },
+                                    {
                                         "uuid": "32f96767664e469687a3d30c7a024e43",
                                         "expression": "last(/Toshiba Printer/toshiba.consumables.level[{#SNMPINDEX}])<{$CONSUMABLE.ERROR_LEVEL}",
                                         "name": "Consumable {#CONSUMABLENAME}: Level low",
                                         "priority": "WARNING",
+                                        "dependencies": [
+                                            {
+                                                "name": "Consumable {#CONSUMABLENAME}: Empty",
+                                                "expression": "last(/Toshiba Printer/toshiba.consumables.level[{#SNMPINDEX}])=0"
+                                            }
+                                        ],
                                         "tags": [
                                             {
-                                                "tag": "compnent",
+                                                "tag": "component",
                                                 "value": "printer"
                                             },
                                             {
@@ -129,7 +317,7 @@
                                 "name": "Error {#ERRORMESSAGE}",
                                 "type": "SNMP_AGENT",
                                 "snmp_oid": "1.3.6.1.4.1.1129.2.3.50.1.3.15.2.1.8.1.{#SNMPINDEX}",
-                                "key": "toshiba.errors.message[{#SNMPINDEX}]",
+                                "key": "toshiba.errors.message[{#ERRORMESSAGE}]",
                                 "delay": "10m",
                                 "history": "7d",
                                 "trends": "0",
@@ -148,7 +336,7 @@
                                 "trigger_prototypes": [
                                     {
                                         "uuid": "a3cbafbebc764f62935a07183fe7b9a7",
-                                        "expression": "last(/Toshiba Printer/toshiba.errors.message[{#SNMPINDEX}])<>0",
+                                        "expression": "last(/Toshiba Printer/toshiba.errors.message[{#ERRORMESSAGE}])<>0",
                                         "name": "Error {#ERRORMESSAGE}",
                                         "priority": "INFO"
                                     }
@@ -177,6 +365,53 @@
                         "macro": "{$ERRORS.DO_NOT_MATCH}",
                         "value": "^(The Time for Periodic Maintenance|.*? Toner Cartridge Low|.*? Toner Empty)$",
                         "description": "Ignore errors if the message matches this macro. Toner warnings are ignored here in favor of custom values in config here."
+                    },
+                    {
+                        "macro": "{$ICMP.LOSS_WARN}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$ICMP.RESPONSE_TIME_WARN}",
+                        "value": "0.15"
+                    },
+                    {
+                        "macro": "{$SNMP.TIMEOUT}",
+                        "value": "5m",
+                        "description": "Trigger SNMP errors if uncontactable for this time."
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "dbfb439a1a9849df9cd31a3931df2f0f",
+                        "name": "Service State",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "up"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3a29444c18c94a91911fa4d78fa00054",
+                        "name": "Zabbix SNMP Monitor",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "not available"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "available"
+                            },
+                            {
+                                "value": "2",
+                                "newvalue": "unknown"
+                            }
+                        ]
                     }
                 ]
             }
