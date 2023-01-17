@@ -15,9 +15,9 @@ Due to the time it takes to request data out of VEEAM we had to setup a schedule
 
 ## Triggers
 
-|Trigger|Description|
-|:------|:---------|
-|VEEAM Data is Old|Alerts when the VEEAM data is more than an hour old.|
+|Trigger|Level|Description|
+|:------|:----|:----------|
+|VEEAM Data is Old|Warning|Alerts when the VEEAM data is more than an hour old.|
 
 ## Macros
 
@@ -43,7 +43,7 @@ Creates the following items for all backup jobs where `{#JOBNAME}` is the name r
 
 #### Triggers
 
-|Trigger|Description|
-|:------|:----------|
-|Backup {#JOBNAME} Failed|Triggers when the last value of `Backup {#JOBNAME} Last Result` is not `Success`.|
-|Backup {#JOBNAME} Missed Last Run|Triggers when the `Backup {#JOBNAME} Last Run` passes `{$VEEAM.BACKUP_AGE_TRIGGER}`.|
+|Trigger|Level|Description|
+|:------|:----|:----------|
+|Backup {#JOBNAME} Failed|High|Triggers when the last value of `Backup {#JOBNAME} Last Result` is not `Success`.|
+|Backup {#JOBNAME} Missed Last Run|High|Triggers when the `Backup {#JOBNAME} Last Run` passes `{$VEEAM.BACKUP_AGE_TRIGGER}`.|
