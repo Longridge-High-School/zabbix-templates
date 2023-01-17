@@ -1,0 +1,105 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2023-01-17T10:06:40Z",
+        "template_groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "403587fc47244a2dad62bf034c9818a0",
+                "template": "Azure AD Connect",
+                "name": "Azure AD Connect",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "7e59d4f084a24232b0b995ec417991a8",
+                        "name": "AADC Discovery",
+                        "key": "aadc.discovery",
+                        "delay": "30m",
+                        "item_prototypes": [
+                            {
+                                "uuid": "2ec2a72b82064fe4a480ff288525b890",
+                                "name": "AADC: {#CONNECTORNAME} - {#RUNSTEP}",
+                                "key": "aadc.run[{#CONNECTORID}, {#RUNPROFILEID}, result]",
+                                "delay": "15m",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "aadc"
+                                    },
+                                    {
+                                        "tag": "connector",
+                                        "value": "{#CONNECTORNAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "1024a1c58cb349f6b9ee1a522384f456",
+                                        "expression": "last(/Azure AD Connect/aadc.run[{#CONNECTORID}, {#RUNPROFILEID}, result])<>\"success\"",
+                                        "name": "AADC: {#CONNECTORNAME} - {#RUNSTEP} Failed",
+                                        "priority": "HIGH",
+                                        "tags": [
+                                            {
+                                                "tag": "component",
+                                                "value": "aadc"
+                                            },
+                                            {
+                                                "tag": "connector",
+                                                "value": "{#CONNECTORNAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "f15b5213c06c4d169d66edbc47f30506",
+                                "name": "AADC: {#CONNECTORNAME} - {#RUNSTEP} Last Run",
+                                "key": "aadc.run[{#CONNECTORID}, {#RUNPROFILEID}, time]",
+                                "delay": "15m",
+                                "trends": "0",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "aadc"
+                                    },
+                                    {
+                                        "tag": "connector",
+                                        "value": "{#CONNECTORNAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "0d0b16bc60354cbaab5de382f753624e",
+                                        "expression": "last(/Azure AD Connect/aadc.run[{#CONNECTORID}, {#RUNPROFILEID}, time])<now()-2700",
+                                        "name": "AADC: {#CONNECTORNAME} - {#RUNSTEP} Missed",
+                                        "priority": "HIGH",
+                                        "tags": [
+                                            {
+                                                "tag": "component",
+                                                "value": "aadc"
+                                            },
+                                            {
+                                                "tag": "connector",
+                                                "value": "{#CONNECTORNAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
