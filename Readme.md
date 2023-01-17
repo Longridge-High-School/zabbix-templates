@@ -12,4 +12,5 @@ When installing windows agent templates the contents of `zabbix_agentd.d` needs 
 
 > You could place the scripts anywhere and update the agent config with the new path.
 
+ - [Azure AD Connect](./windows-agent/aadc/)
  - [VEEAM](./windows-agent/veeam/)
