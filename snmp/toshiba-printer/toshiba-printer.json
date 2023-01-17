@@ -1,0 +1,185 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2023-01-16T14:34:48Z",
+        "template_groups": [
+            {
+                "uuid": "394c5e7371c2468cbaa0fd6d6af899bb",
+                "name": "Printers"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "412dd44f9532454a9b1de360b0f70814",
+                "template": "Toshiba Printer",
+                "name": "Toshiba Printer",
+                "groups": [
+                    {
+                        "name": "Printers"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "24b778a891b540e98316529094c8b7f0",
+                        "name": "Device Model",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.2.1.1.1.0",
+                        "key": "toshiba.device.model",
+                        "delay": "1d",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "description": "The device model as reported by SNMP",
+                        "inventory_link": "MODEL"
+                    },
+                    {
+                        "uuid": "9f372e81fc4049258785ee3fc0966f05",
+                        "name": "Device Name",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.2.1.1.1.0",
+                        "key": "toshiba.device.name",
+                        "delay": "1h",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "description": "The devices reported name"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "dda353daa6474c04a2018bfaa4e9a613",
+                        "name": "Consumables Discovery",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "discovery[{#CONSUMABLENAME},1.3.6.1.2.1.43.11.1.1.6.1]",
+                        "key": "toshiba.consumables.discovery",
+                        "delay": "10m",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#CONSUMABLENAME}",
+                                    "value": "{$CONSUMABLE.DO_NOT_MATCH}",
+                                    "operator": "NOT_MATCHES_REGEX",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "5d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "c41552690d414605928377888fa4f654",
+                                "name": "Consumable {#CONSUMABLENAME}: Level",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.2.1.43.11.1.1.9.1.{#SNMPINDEX}",
+                                "key": "toshiba.consumables.level[{#SNMPINDEX}]",
+                                "delay": "15m",
+                                "units": "%",
+                                "description": "The current level of the consumable.",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "printer"
+                                    },
+                                    {
+                                        "tag": "consumable",
+                                        "value": "{#CONSUMABLENAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "32f96767664e469687a3d30c7a024e43",
+                                        "expression": "last(/Toshiba Printer/toshiba.consumables.level[{#SNMPINDEX}])<{$CONSUMABLE.ERROR_LEVEL}",
+                                        "name": "Consumable {#CONSUMABLENAME}: Level low",
+                                        "priority": "WARNING",
+                                        "tags": [
+                                            {
+                                                "tag": "compnent",
+                                                "value": "printer"
+                                            },
+                                            {
+                                                "tag": "consumable",
+                                                "value": "{#CONSUMABLENAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b0d4e25f3cce415ab29eebfed113fcff",
+                        "name": "Error Discovery",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "discovery[{#ERRORMESSAGE},1.3.6.1.4.1.1129.2.3.50.1.3.15.2.1.8.1]",
+                        "key": "toshiba.errors.discovery",
+                        "delay": "10m",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#ERRORMESSAGE}",
+                                    "value": "{$ERRORS.DO_NOT_MATCH}",
+                                    "operator": "NOT_MATCHES_REGEX",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "0s",
+                        "item_prototypes": [
+                            {
+                                "uuid": "d4e9fcef271947b9925af90f5954c91c",
+                                "name": "Error {#ERRORMESSAGE}",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.1129.2.3.50.1.3.15.2.1.8.1.{#SNMPINDEX}",
+                                "key": "toshiba.errors.message[{#SNMPINDEX}]",
+                                "delay": "10m",
+                                "history": "7d",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "description": "This discovered error will only exist whilst the error is present. As soon as the error clears this item will also be deleted.",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "printer"
+                                    },
+                                    {
+                                        "tag": "error",
+                                        "value": "{#ERRORMESSAGE}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "a3cbafbebc764f62935a07183fe7b9a7",
+                                        "expression": "last(/Toshiba Printer/toshiba.errors.message[{#SNMPINDEX}])<>0",
+                                        "name": "Error {#ERRORMESSAGE}",
+                                        "priority": "INFO"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "tags": [
+                    {
+                        "tag": "component",
+                        "value": "printer"
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$CONSUMABLE.DO_NOT_MATCH}",
+                        "value": "^Waste Toner$"
+                    },
+                    {
+                        "macro": "{$CONSUMABLE.ERROR_LEVEL}",
+                        "value": "2",
+                        "description": "The percentage at which toners should generate a warning."
+                    },
+                    {
+                        "macro": "{$ERRORS.DO_NOT_MATCH}",
+                        "value": "^(The Time for Periodic Maintenance|.*? Toner Cartridge Low|.*? Toner Empty)$",
+                        "description": "Ignore errors if the message matches this macro. Toner warnings are ignored here in favor of custom values in config here."
+                    }
+                ]
+            }
+        ]
+    }
+}
