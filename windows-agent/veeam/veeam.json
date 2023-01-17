@@ -1,0 +1,95 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2023-01-16T14:50:24Z",
+        "template_groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "d178d34d06b54fd2b44d23c906efcbc5",
+                "template": "VEEAM",
+                "name": "VEEAM",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "2a702ae9f16b4893bfbd15a59680341e",
+                        "name": "VEEAM Data Creation",
+                        "key": "veeam.created",
+                        "delay": "10",
+                        "triggers": [
+                            {
+                                "uuid": "4649c26fbdd34e2fbb69fb596b0b0c02",
+                                "expression": "last(/VEEAM/veeam.created)<(now()-3600)",
+                                "name": "VEEAM Data is Old",
+                                "priority": "WARNING"
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "1a31cf3a43d3488a8780e6de8ebe74dd",
+                        "name": "Backup Jobs",
+                        "key": "veeam.jobs.discovery",
+                        "delay": "1d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "7902253de6d54dcd9930c149c1db561f",
+                                "name": "Backup {#JOBNAME} Last Result",
+                                "key": "veeam.jobs.details[{#JOBNAME},result]",
+                                "delay": "10m",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "354e55dcffa743d09ab46c9d1727f009",
+                                        "expression": "last(/VEEAM/veeam.jobs.details[{#JOBNAME},result])<>\"Success\"",
+                                        "name": "Backup {#JOBNAME} Failed",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "ad4a66053cb0452e85e336fc74e876e0",
+                                "name": "Backup {#JOBNAME} Size",
+                                "key": "veeam.jobs.details[{#JOBNAME},size]",
+                                "units": "B"
+                            },
+                            {
+                                "uuid": "4f2516f0f85b4dc0af39b9940e0fe2f3",
+                                "name": "Backup {#JOBNAME} Last Run",
+                                "key": "veeam.jobs.details[{#JOBNAME},time]",
+                                "delay": "1h",
+                                "history": "10d",
+                                "trends": "0",
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "e88e9c8137304d2ab57bbf5884363f42",
+                                        "expression": "last(/VEEAM/veeam.jobs.details[{#JOBNAME},time])<now()-{$VEEAM.BACKUP_AGE_TRIGGER}",
+                                        "name": "Backup {#JOBNAME} Missed Last Run",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$VEEAM.BACKUP_AGE_TRIGGER}",
+                        "value": "90000",
+                        "description": "How long after a run should it be considered missed."
+                    }
+                ]
+            }
+        ]
+    }
+}
