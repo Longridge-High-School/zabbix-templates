@@ -1,0 +1,255 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2023-01-24T12:27:35Z",
+        "template_groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "031bec0d5e254158863fa2366629b481",
+                "template": "UniFi Controller",
+                "name": "UniFi Controller",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "319b8d4c6b3348d6a5e80c362acd5faf",
+                        "name": "Device Discovery",
+                        "key": "unifi[deviceDiscovery]",
+                        "delay": "10m",
+                        "item_prototypes": [
+                            {
+                                "uuid": "fcfa4c0db0f64762acda0f0386d68440",
+                                "name": "Unifi Device {#DEVICENAME}: Model",
+                                "key": "unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},model]",
+                                "delay": "1d",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "unifi-controller"
+                                    },
+                                    {
+                                        "tag": "unifi-device",
+                                        "value": "{#DEVICENAME}"
+                                    },
+                                    {
+                                        "tag": "unifi-site",
+                                        "value": "{#SITENAME}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "61bb5d9754434ce49172623706a666dd",
+                                "name": "Unifi Device {#DEVICENAME}: Status",
+                                "key": "unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},state]",
+                                "valuemap": {
+                                    "name": "Device State"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "unifi-controller"
+                                    },
+                                    {
+                                        "tag": "unifi-device",
+                                        "value": "{#DEVICENAME}"
+                                    },
+                                    {
+                                        "tag": "unifi-site",
+                                        "value": "{#SITENAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "2febf0d9dbf24fbeb64f29db2dd28df3",
+                                        "expression": "last(/UniFi Controller/unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},state])=0",
+                                        "name": "Unifi Device {#DEVICENAME} Disconnected",
+                                        "priority": "WARNING",
+                                        "tags": [
+                                            {
+                                                "tag": "application",
+                                                "value": "unifi-controller"
+                                            },
+                                            {
+                                                "tag": "scope",
+                                                "value": "health"
+                                            },
+                                            {
+                                                "tag": "unifi-device",
+                                                "value": "{#DEVICENAME}"
+                                            },
+                                            {
+                                                "tag": "unifi-site",
+                                                "value": "{#SITENAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "94b0d2413ac04aea9415ce0fa507d95f",
+                                "name": "Unifi Device {#DEVICENAME}: Upgradable",
+                                "key": "unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},upgradable]",
+                                "delay": "1h",
+                                "history": "7d",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "unifi-controller"
+                                    },
+                                    {
+                                        "tag": "unifi-device",
+                                        "value": "{#DEVICENAME}"
+                                    },
+                                    {
+                                        "tag": "unifi-site",
+                                        "value": "{#SITENAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "5d038047cfc14bbfb13a896b5857b5ef",
+                                        "expression": "last(/UniFi Controller/unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},upgradable])=\"True\"",
+                                        "name": "Unifi Device {#DEVICENAME} has upgrade",
+                                        "priority": "INFO",
+                                        "tags": [
+                                            {
+                                                "tag": "application",
+                                                "value": "unifi-controller"
+                                            },
+                                            {
+                                                "tag": "unifi-device",
+                                                "value": "{#DEVICENAME}"
+                                            },
+                                            {
+                                                "tag": "unifi-site",
+                                                "value": "{#SITENAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "2c673098c469403a8dc09f6cc66364b7",
+                                "name": "Unifi Device {#DEVICENAME}: Uptime",
+                                "key": "unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},uptime]",
+                                "trends": "0",
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "unifi-controller"
+                                    },
+                                    {
+                                        "tag": "unifi-device",
+                                        "value": "{#DEVICENAME}"
+                                    },
+                                    {
+                                        "tag": "unifi-site",
+                                        "value": "{#SITENAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "a978debb50424baab6fba3a6028e83e9",
+                                        "expression": "last(/UniFi Controller/unifi[deviceHealth,{#SITENAME},{#DEVICEMAC},uptime])<3600",
+                                        "name": "Unifi Device {#DEVICENAME} Low Uptime",
+                                        "priority": "INFO",
+                                        "tags": [
+                                            {
+                                                "tag": "application",
+                                                "value": "unifi-controller"
+                                            },
+                                            {
+                                                "tag": "unifi-device",
+                                                "value": "{#DEVICENAME}"
+                                            },
+                                            {
+                                                "tag": "unifi-site",
+                                                "value": "{#SITENAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c7fb9722b19544ddb16bf0e99f97b117",
+                        "name": "Site Discovery",
+                        "key": "unifi[siteDiscovery]",
+                        "item_prototypes": [
+                            {
+                                "uuid": "4f9d812a28b64ebb995d7d029ec1f7e6",
+                                "name": "Unifi Site {#SITENAME}: Wireless Guests",
+                                "key": "unifi[siteHealth,{#SITENAME},wlan,num_guest]",
+                                "history": "7d",
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "unifi-controller"
+                                    },
+                                    {
+                                        "tag": "unifi-site",
+                                        "value": "{#SITENAME}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "dd4c924cd3ab447eb62d13e96aa6c35e",
+                                "name": "Unifi Site {#SITENAME}: Wireless Users",
+                                "key": "unifi[siteHealth,{#SITENAME},wlan,num_user]",
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "unifi-controller"
+                                    },
+                                    {
+                                        "tag": "unifi-site",
+                                        "value": "{#SITENAME}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "tags": [
+                    {
+                        "tag": "application",
+                        "value": "unifi-controller"
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "2c1afd9d3e564081bd670763b8ae018a",
+                        "name": "Device State",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "disconnected"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "connected"
+                            },
+                            {
+                                "value": "4",
+                                "newvalue": "upgrading"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
