@@ -4,26 +4,16 @@ This template pulls VEEAM backup jobs and reports on their status, size and last
 
 ## EXTRA INSTALLATION STEPS
 
-Due to the time it takes to request data out of VEEAM we had to setup a scheduled task to run `veeam-data-builder.ps1` every 15 minutes.
-
-## Items
-
-|Item|Description|
-|:---|:----------|
-|VEEAM Data Creation|This collects the date that the VEEAM data JSON file was created so that you can be warned if your scheduled task stops reporting data.|
-
-
-## Triggers
-
-|Trigger|Level|Description|
-|:------|:----|:----------|
-|VEEAM Data is Old|Warning|Alerts when the VEEAM data is more than an hour old.|
+ 1. Set the variables in `veeam.ps1`
+ 1. Setup a scheduled task to run `veeam.ps1` every 15 minutes.
 
 ## Macros
 
 |Macro|Description|Default|
 |:----|:----------|:------|
 |{$VEEAM.BACKUP_AGE_TRIGGER}|How many seconds after a backup last runs should it be considered missed?|`90000` (25 hours)|
+|{$VEEAM.MEDIA_POOL.DO_NOT_MATCH}|Which media pools should be ignored.|`^(Imported|Retired|Unrecognized|Free)$`|
+|{$VEEAM.TAPE_AGE_TRIGGER}|How many seconds after a media pool is last written to should it be considered missed?|`90000` (25 hours)|
 
 ## Discoveries
 
@@ -47,3 +37,31 @@ Creates the following items for all backup jobs where `{#JOBNAME}` is the name r
 |:------|:----|:----------|
 |Backup {#JOBNAME} Failed|High|Triggers when the last value of `Backup {#JOBNAME} Last Result` is not `Success`.|
 |Backup {#JOBNAME} Missed Last Run|High|Triggers when the `Backup {#JOBNAME} Last Run` passes `{$VEEAM.BACKUP_AGE_TRIGGER}`.|
+
+### Media Pools
+
+Finds all the tape media pools, excluding any that match `{$VEEAM.MEDIA_POOL.DO_NOT_MATCH}`.
+
+#### Items
+
+|Item|Description|
+|:---|:----------|
+|Media Pool {#MEDIAPOOL}: Last Tape|The latest tape used in the media pool.|
+|Media Pool {#MEDIAPOOL}: Last Write|The last time any tape in the pool was written to.|
+
+#### Triggers
+
+|Trigger|Level|Description|
+|:------|:----|:----------|
+|Media Pool {#MEDIAPOOL}: Last Write too old|High|Triggers when the last tape write for the media pool passes `{$VEEAM.TAPE_AGE_TRIGGER}`|
+
+### Tapes
+
+Finds all the tapes across all the media pools, excluding any in the media pools that match `{$VEEAM.MEDIA_POOL.DO_NOT_MATCH}`.
+
+#### Items
+
+|Item|Description|
+|:---|:----------|
+|Tape {#MEDIAPOOL} - {#TAPENAME}: Capacity|The capacity of the tape.|
+|Tape {#MEDIAPOOL} - {#TAPENAME}: Last Write|When the tape was last written to.|
