@@ -1,0 +1,231 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2023-02-03T12:21:23Z",
+        "template_groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "11a613c03de2487291af64f9bbc472c1",
+                "template": "Sophos Central",
+                "name": "Sophos Central",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "4a3b7a7de2b048c2aaeda4750bd9235b",
+                        "name": "Computer Endpoints with protection issues",
+                        "type": "TRAP",
+                        "key": "sophos-central.endpoint.protection.computer.nfp",
+                        "delay": "0"
+                    },
+                    {
+                        "uuid": "5c2d8d356abb438f85b59489ac8796e2",
+                        "name": "Computer Endpoints",
+                        "type": "TRAP",
+                        "key": "sophos-central.endpoint.protection.computer.total",
+                        "delay": "0",
+                        "triggers": [
+                            {
+                                "uuid": "ee2642f170da478cb48aef38b363c892",
+                                "expression": "nodata(/Sophos Central/sophos-central.endpoint.protection.computer.total,{$NO_DATA_WARNING})=1",
+                                "name": "No Data from Sophos Central",
+                                "priority": "INFO",
+                                "tags": [
+                                    {
+                                        "tag": "application",
+                                        "value": "sophos-central"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ee6b4aa8b73f456db536554ca10912d9",
+                        "name": "Server Endpoints with protection issues",
+                        "type": "TRAP",
+                        "key": "sophos-central.endpoint.protection.server.nfp",
+                        "delay": "0"
+                    },
+                    {
+                        "uuid": "1f6e71e02f6249ebb785d0a5d972bfc6",
+                        "name": "Server Endpoints",
+                        "type": "TRAP",
+                        "key": "sophos-central.endpoint.protection.server.total",
+                        "delay": "0"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "1a1bb916cb7a441d87b0a006462ee221",
+                        "name": "Alerts Discovery",
+                        "type": "TRAP",
+                        "key": "sophos-central.alerts.discovery",
+                        "delay": "0",
+                        "lifetime": "1h",
+                        "item_prototypes": [
+                            {
+                                "uuid": "15d1fc57d2ed4def93ff773f361fb51c",
+                                "name": "Alert {#ALERTTITLE}: Agent",
+                                "type": "TRAP",
+                                "key": "sophos-central.alerts.agent[{#ALERTID}]",
+                                "delay": "0",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "4819ef15b0c6408e8389fae0af23b29c",
+                                        "expression": "last(/Sophos Central/sophos-central.alerts.agent[{#ALERTID}])<>0",
+                                        "name": "Sophos Central {#ALERTTITLE}",
+                                        "priority": "INFO",
+                                        "dependencies": [
+                                            {
+                                                "name": "No Data from Sophos Central",
+                                                "expression": "nodata(/Sophos Central/sophos-central.endpoint.protection.computer.total,{$NO_DATA_WARNING})=1"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return decodeURIComponent(value)"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4914ec47594f4223b02caf4effd1b308",
+                        "name": "Endpoint Discovery",
+                        "type": "TRAP",
+                        "key": "sophos-central.endpoints.discovery",
+                        "delay": "0",
+                        "lifetime": "7d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "247e4201e52946be87947231a8f60624",
+                                "name": "Endpoint {#ENDPOINTNAME}: Last Seen",
+                                "type": "TRAP",
+                                "key": "sophos-central.endpoints.last-seen[{#ENDPOINTID}]",
+                                "delay": "0",
+                                "units": "s",
+                                "preprocessing": [
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "return Math.floor(Date.now() / 1000) - value"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "endpoint",
+                                        "value": "{#ENDPOINTNAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "884dea5f9d394ae29b5467aac17fe7ba",
+                                        "expression": "last(/Sophos Central/sophos-central.endpoints.last-seen[{#ENDPOINTID}])>{$ENDPOINT.LAST_SEEN_TRIGGER}",
+                                        "name": "Endpoint {#ENDPOINTNAME}: Overdue Check-in",
+                                        "priority": "INFO",
+                                        "dependencies": [
+                                            {
+                                                "name": "No Data from Sophos Central",
+                                                "expression": "nodata(/Sophos Central/sophos-central.endpoint.protection.computer.total,{$NO_DATA_WARNING})=1"
+                                            }
+                                        ],
+                                        "tags": [
+                                            {
+                                                "tag": "endpoint",
+                                                "value": "{#ENDPOINTNAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "a5c8a385e1a54e99950709c9c38d80b3",
+                                "name": "Endpoint {#ENDPOINTNAME}: Overall Health",
+                                "type": "TRAP",
+                                "key": "sophos-central.endpoints.overall-health[{#ENDPOINTID}]",
+                                "delay": "0",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "health"
+                                    },
+                                    {
+                                        "tag": "endpoint",
+                                        "value": "{#ENDPOINTNAME}"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "a6c281e6b0cc4025b6f54ac95415fe50",
+                                        "expression": "last(/Sophos Central/sophos-central.endpoints.overall-health[{#ENDPOINTID}])<>\"good\"",
+                                        "name": "Endpoint {#ENDPOINTNAME}: Overall Health not good",
+                                        "priority": "WARNING",
+                                        "manual_close": "YES",
+                                        "dependencies": [
+                                            {
+                                                "name": "Endpoint {#ENDPOINTNAME}: Overdue Check-in",
+                                                "expression": "last(/Sophos Central/sophos-central.endpoints.last-seen[{#ENDPOINTID}])>{$ENDPOINT.LAST_SEEN_TRIGGER}"
+                                            },
+                                            {
+                                                "name": "No Data from Sophos Central",
+                                                "expression": "nodata(/Sophos Central/sophos-central.endpoint.protection.computer.total,{$NO_DATA_WARNING})=1"
+                                            }
+                                        ],
+                                        "tags": [
+                                            {
+                                                "tag": "endpoint",
+                                                "value": "{#ENDPOINTNAME}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return decodeURIComponent(value)"
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "tags": [
+                    {
+                        "tag": "application",
+                        "value": "sophos"
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$ENDPOINT.LAST_SEEN_TRIGGER}",
+                        "value": "14d"
+                    },
+                    {
+                        "macro": "{$NO_DATA_WARNING}",
+                        "value": "35m"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -7,7 +7,7 @@ $configFile = 'C:\Program Files\Zabbix Agent\zabbix_agentd.conf'
 # The temp file to store values in to send
 $zabbixFile = "C:\scripts\zabbix\sophos-values.txt"
 # The Server Address for Zabbix
-$zabbixServer = "10.67.11.212"
+$zabbixServer = ""
 # The client ID from Sophos
 $clientId = ""
 #The Client secret from Sophos
