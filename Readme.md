@@ -2,6 +2,13 @@
 
 These are our custom [Zabbix](https://www.zabbix.com/) templates for monitoring across the network.
 
+## PowerShell Monitor
+
+These make use of `zabbix_sender.exe` on the Windows Agents to send data. This allows for long-run processes that would normally time out, or for monitoring external APIs.
+
+ - [Sophos Central](./powershell-monitor/sophos-central/)
+ - [VEEAM](./powershell-monitor/veeam/)
+
 ## SNMP
 
  - [Toshiba Printer](./snmp/toshiba-printer/)
@@ -14,4 +21,3 @@ When installing windows agent templates the contents of `zabbix_agentd.d` needs 
 
  - [Azure AD Connect](./windows-agent/aadc/)
  - [UniFi Controller](./windows-agent/unifi-controller/)
- - [VEEAM](./windows-agent/veeam/)
