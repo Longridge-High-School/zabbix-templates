@@ -1,0 +1,435 @@
+{
+    "zabbix_export": {
+        "version": "6.2",
+        "date": "2023-02-06T11:39:56Z",
+        "template_groups": [
+            {
+                "uuid": "3dcd5bbe90534f9e8eb5c2d53756af63",
+                "name": "Templates/Power"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "55b83b59ade141b8a45062998941fb78",
+                "template": "HP UPS",
+                "name": "HP UPS",
+                "groups": [
+                    {
+                        "name": "Templates/Power"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "480152da05844806ae72ef8a0ea44408",
+                        "name": "ICMP Ping",
+                        "type": "SIMPLE",
+                        "key": "icmpping",
+                        "history": "7d",
+                        "valuemap": {
+                            "name": "Service State"
+                        },
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b9b9a5dad36a4446b2e434101e70f59c",
+                        "name": "ICMP loss",
+                        "type": "SIMPLE",
+                        "key": "icmppingloss",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "7bf6e1c0160046aaa7e6a3d02b9f6272",
+                        "name": "ICMP response time",
+                        "type": "SIMPLE",
+                        "key": "icmppingsec",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "s",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "health"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "network"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a4af217a6e7a42b1a6b1f95d5383d184",
+                        "name": "Battery Capacity",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.2.4.0",
+                        "key": "ups.battery.capacity",
+                        "history": "7d",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "battery",
+                                "value": "capacity"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a683c8cfd72c4b418c62fabfbffd899d",
+                        "name": "Battery Time Remaining",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.2.1.0",
+                        "key": "ups.battery.remaining",
+                        "history": "7d",
+                        "units": "s",
+                        "tags": [
+                            {
+                                "tag": "battery",
+                                "value": "runtime"
+                            },
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "26270408c41a4282adb9d5a739681477",
+                                "expression": "last(/HP UPS/ups.battery.remaining)<{$BATTERY.MIN_RUNTIME}",
+                                "name": "Battery run time low",
+                                "priority": "AVERAGE"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "cdd1508001bb4dd6b0fc4832ef2cc26b",
+                        "name": "Input Frequency",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.3.1.0",
+                        "key": "ups.input.frequency",
+                        "history": "7d",
+                        "units": "hz",
+                        "description": "The input frequency of the AC power supply.",
+                        "preprocessing": [
+                            {
+                                "type": "MULTIPLIER",
+                                "parameters": [
+                                    "0.1"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "1b6a6c8ad2fd4ef4b630902a6c75dd00",
+                        "name": "Input Phase Count",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.3.3.0",
+                        "key": "ups.input.phases",
+                        "delay": "1d",
+                        "history": "7d",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "bff231e836b14f768fe404d8533e4197",
+                        "name": "Target Input Voltage",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.9.2.0",
+                        "key": "ups.input.targetVoltage",
+                        "delay": "1h",
+                        "history": "7d",
+                        "units": "v",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9685d821dadb47e3ab3173a08ee7a626",
+                        "name": "Output Source",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.4.5.0",
+                        "key": "ups.output.source",
+                        "valuemap": {
+                            "name": "UPS Output"
+                        },
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            },
+                            {
+                                "tag": "power",
+                                "value": "source"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "c373eb83b6d849508361318c5da1d3d8",
+                                "expression": "last(/HP UPS/ups.output.source)<>3",
+                                "name": "Output Source non-normal",
+                                "priority": "HIGH",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "power"
+                                    },
+                                    {
+                                        "tag": "power",
+                                        "value": "source"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a3ba6d7a4af34fb39667e935a7877a31",
+                        "name": "Target Output Voltage",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "1.3.6.1.4.1.232.165.3.9.1.0",
+                        "key": "ups.output.targetVoltage",
+                        "delay": "1h",
+                        "history": "7d",
+                        "units": "v",
+                        "description": "The target voltage per phase of the UPS",
+                        "tags": [
+                            {
+                                "tag": "component",
+                                "value": "power"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a7235f3b09094741991d4b71009ec86f",
+                        "name": "SNMP agent availability",
+                        "type": "INTERNAL",
+                        "key": "zabbix[host,snmp,available]",
+                        "history": "7d",
+                        "valuemap": {
+                            "name": "Zabbix SNMP Monitor"
+                        }
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "01f4147f63874c2fb1e6884a157ed76d",
+                        "name": "Input Discovery",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "discovery[{#INPUTPHASE},1.3.6.1.4.1.232.165.3.3.4.1.1]",
+                        "key": "ups.input.discovery",
+                        "delay": "15m",
+                        "item_prototypes": [
+                            {
+                                "uuid": "f0bd4405c0674ba39a1f5ed2daa70e8c",
+                                "name": "Input (Phase {#INPUTPHASE}): Current",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.232.165.3.3.4.1.3.{#SNMPINDEX}",
+                                "key": "ups.input.current[{#SNMPINDEX}]",
+                                "history": "7d"
+                            },
+                            {
+                                "uuid": "05da9354d8f24505804bb869a6110664",
+                                "name": "Input (Phase {#INPUTPHASE}): Voltage",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.232.165.3.3.4.1.2.{#SNMPINDEX}",
+                                "key": "ups.input.voltage[{#SNMPINDEX}]",
+                                "history": "7d"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "48f382aaf0614025b481f9b039af4508",
+                        "name": "Output Discovery",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "discovery[{#OUTPUTPHASE},1.3.6.1.4.1.232.165.3.4.4.1.1]",
+                        "key": "ups.output.discovery",
+                        "item_prototypes": [
+                            {
+                                "uuid": "c128a080e80e490abcaade78f26229b7",
+                                "name": "Output (Phase {#OUTPUTPHASE}): Current",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.232.165.3.4.4.1.3.{#SNMPINDEX}",
+                                "key": "ups.output.current[{#SNMPINDEX}]",
+                                "history": "7d",
+                                "units": "a",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "power"
+                                    },
+                                    {
+                                        "tag": "power-phase",
+                                        "value": "{#OUTPUTPHASE}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "ae4d09ec72d24d2a8f6a8eb39b611272",
+                                "name": "Output (Phase {#OUTPUTPHASE}): Power",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.232.165.3.4.4.1.4.{#SNMPINDEX}",
+                                "key": "ups.output.power[{#SNMPINDEX}]",
+                                "history": "7d",
+                                "units": "w",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "power"
+                                    },
+                                    {
+                                        "tag": "power-phase",
+                                        "value": "{#OUTPUTPHASE}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "581af49e1149433c8a7a85e24c152d8f",
+                                "name": "Output (Phase {#OUTPUTPHASE}): Voltage",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.232.165.3.4.4.1.2.{#SNMPINDEX}",
+                                "key": "ups.output.voltage[{#SNMPINDEX}]",
+                                "units": "v",
+                                "tags": [
+                                    {
+                                        "tag": "component",
+                                        "value": "power"
+                                    },
+                                    {
+                                        "tag": "power-phase",
+                                        "value": "{#OUTPUTPHASE}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "tags": [
+                    {
+                        "tag": "component",
+                        "value": "power"
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$BATTERY.MIN_RUNTIME}",
+                        "value": "900"
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "d298c9efa5ca4bb3a481dc2fa5778c7d",
+                        "name": "Service State",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "up"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2b0b68058a3041f595bfcd60f90c754e",
+                        "name": "UPS Output",
+                        "mappings": [
+                            {
+                                "value": "1",
+                                "newvalue": "other"
+                            },
+                            {
+                                "value": "2",
+                                "newvalue": "none"
+                            },
+                            {
+                                "value": "3",
+                                "newvalue": "normal"
+                            },
+                            {
+                                "value": "4",
+                                "newvalue": "bypass"
+                            },
+                            {
+                                "value": "5",
+                                "newvalue": "battery"
+                            },
+                            {
+                                "value": "6",
+                                "newvalue": "booster"
+                            },
+                            {
+                                "value": "7",
+                                "newvalue": "reducer"
+                            },
+                            {
+                                "value": "8",
+                                "newvalue": "parallelCapacity"
+                            },
+                            {
+                                "value": "9",
+                                "newvalue": "parallelRedundant"
+                            },
+                            {
+                                "value": "10",
+                                "newvalue": "highEfficiencyMode"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4dcb2cb7776f42e09bfb04d3d97376a3",
+                        "name": "Zabbix SNMP Monitor",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "not available"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "available"
+                            },
+                            {
+                                "value": "2",
+                                "newvalue": "unknown"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

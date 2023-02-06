@@ -11,6 +11,7 @@ These make use of `zabbix_sender.exe` on the Windows Agents to send data. This a
 
 ## SNMP
 
+ - [HP UPS](./snmp/hp-ups)
  - [Toshiba Printer](./snmp/toshiba-printer/)
 
 ## Windows Agent
