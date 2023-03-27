@@ -11,5 +11,5 @@ if($Property -eq "result"){
 }
 
 if($Property -eq "time"){
-    ([DateTimeOffset]($run.EndDate)).ToUnixTimeSeconds()
+    ([DateTimeOffset]($run.EndDate.ToLocalTime())).ToUnixTimeSeconds()
 }
