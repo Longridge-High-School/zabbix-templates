@@ -9,11 +9,13 @@ This template pulls VEEAM backup jobs and reports on their status, size and last
 
 ## Macros
 
+<!-- prettier-ignore-start -->
 | Macro                            | Description                                                                            | Default            |
-| :------------------------------- | :------------------------------------------------------------------------------------- | :----------------- | ------- | ------------ | ------- |
+| :------------------------------- | :------------------------------------------------------------------------------------- | :----------------- |
 | {$VEEAM.BACKUP_AGE_TRIGGER}      | How many seconds after a backup last runs should it be considered missed?              | `90000` (25 hours) |
-| {$VEEAM.MEDIA_POOL.DO_NOT_MATCH} | Which media pools should be ignored.                                                   | `^(Imported        | Retired | Unrecognized | Free)$` |
+| {$VEEAM.MEDIA_POOL.DO_NOT_MATCH} | Which media pools should be ignored.                                                   | `^(Imported|Retired|Unrecognized|Free)$`|
 | {$VEEAM.TAPE_AGE_TRIGGER}        | How many seconds after a media pool is last written to should it be considered missed? | `90000` (25 hours) |
+<!-- prettier-ignore-end -->
 
 ## Discoveries
 
